@@ -17,6 +17,10 @@
     flag = !flag;
     dispatch("contactSelected", contact);
   }
+  // console.log(filteredContacts);
+
+  
+  
   async function fetchContacts() {
     try {
       const response = await fetch("https://dummyjson.com/users");

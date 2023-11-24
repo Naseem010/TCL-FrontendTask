@@ -4,10 +4,10 @@
   import type { Contact } from "./contacts.interface.ts";
   import ContactInfo from "./contactInfo.svelte";
   let flag:boolean;
-  let contacts: Contact[] = [];
+  let contacts:Contact[]= [];
   let originalContacts: Contact[] = [];
-  let searchQuery = '';
-  let filteredContacts: Record<string, Contact[]> = {};
+  let searchQuery;
+  let filteredContacts= {};
   async function fetchContacts() {
     try {
       const response = await fetch("https://dummyjson.com/users");
@@ -19,6 +19,7 @@
     }
   }
 
+
  
   onMount(async () => {
     await fetchContacts();
@@ -26,13 +27,16 @@
  
   $: {
     filteredContacts = filterContacts();
+    console.log(filteredContacts);
   }
 
+  
+//  $: console.log('filteredContacts in +page.svelte:', filteredContacts);
   function filterContacts() {
     if (!searchQuery || searchQuery.trim() === "") {
       return groupContactsByAlphabet();
     }
-
+   
     const filtered: Record<string, Contact[]> = {};
     const searchTerm = searchQuery.toLowerCase().trim();
     originalContacts.forEach((contact) => {
@@ -51,11 +55,11 @@
    
     return filtered;
   }
-  // console.log('filteredContacts in +page.svelte:', filteredContacts);
+  // $:console.log('filteredContacts in +page.svelte:', filteredContacts);
 
   function groupContactsByAlphabet() {
+    $:console.log({contacts});
     const grouped: Record<string, Contact[]> = {};
-
     contacts.forEach((contact) => {
       const firstLetter = contact.firstName.charAt(0).toUpperCase();
       if (!grouped[firstLetter]) {
@@ -74,6 +78,7 @@
   
 </script>
 
+<!-- svelte-ignore non-top-level-reactive-declaration -->
 <svelte:head>
   <title>My Contacts</title>
   <meta name="description" content="Svelte demo app" />
@@ -110,6 +115,6 @@ class=" px-5 pt-4 [font-family:'Nunito-SemiBold',Helvetica] font-semibold text-b
 >
 Contacts
 </div>
-<ContactDetails bind:flag on:contactSelected={handleContactSelected} contacts={contacts} originalContacts={originalContacts} filteredContacts={filteredContacts} searchQuery={searchQuery}/>
+<ContactDetails bind:flag on:contactSelected={handleContactSelected} {contacts} {originalContacts} {filteredContacts} {searchQuery}/>
 </section>
 {/if}
